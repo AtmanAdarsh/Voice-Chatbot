@@ -21,9 +21,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install spacy  # ✅ Ensure spacy is installed
 
       - name: Install spaCy English Model
-        run: python -m spacy download en_core_web_sm
+        run: python -m spacy download en_core_web_sm  # ✅ This should work now
 
       - name: Run Chatbot
         run: python app.py
