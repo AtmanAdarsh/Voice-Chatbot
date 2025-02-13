@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Girl Voice Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>💬 Girl Voice Chatbot</h1>
+        <div id="chatbox"></div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            <button onclick="startRecording()"><i class="fas fa-microphone"></i></button>
+        </div>
+        <audio id="bot-audio" controls style="display:none;"></audio>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            if (!userInput) return;
+
+            const chatbox = document.getElementById('chatbox');
+            chatbox.innerHTML += `<div class="message user">${userInput}</div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            fetch('/get_response', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `user_input=${encodeURIComponent(userInput)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatbox.innerHTML += `<div class="message bot">${data.response}</div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+                const audio = document.getElementById('bot-audio');
+                audio.src = data.audio_url;
+                audio.play();
+            });
+
+            document.getElementById('user-input').value = '';
+        }
+
+        function startRecording() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                document.getElementById('user-input').value = event.results[0][0].transcript;
+                sendMessage();
+            };
+        }
+    </script>
+</body>
+</html>
