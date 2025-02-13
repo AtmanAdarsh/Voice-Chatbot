@@ -43,5 +43,4 @@ Flask
 SpeechRecognition
 gTTS
 ChatterBot
-ChatterBotCorpus
 Flask-Cors
