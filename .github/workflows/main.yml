@@ -1,0 +1,24 @@
+name: Run Chatbot
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.11
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Chatbot
+        run: python app.py
